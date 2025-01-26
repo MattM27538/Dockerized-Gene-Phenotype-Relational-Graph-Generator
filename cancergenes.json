@@ -1,0 +1,11 @@
+[
+    {
+        "Classification"  : "Breast cancer (women)",
+        "Associated Gene" : "ATM"
+    },
+    {
+        "Classification"  : "Breast cancer (women)",
+        "Associated Gene" : "BARD1"
+    }
+
+]
