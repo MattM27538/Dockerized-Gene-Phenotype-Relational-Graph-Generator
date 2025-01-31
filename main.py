@@ -9,39 +9,38 @@ def mongo_init(MongoDBclient):
     db=MongoDBclient['GenePhenotypeDB']
     return db
 
-def main():
-    #Initialize MongoDB and a mongo collection.
-    mongoDBclient=None
-    db=mongo_init(mongoDBclient)
-    dbcollection=db['CancersAndRelatedGenes']
+def draw_graph(genePhenotypeNetwork):
+    pos=nx.spring_layout(genePhenotypeNetwork,k=3)
+    plt.figure(3,figsize=(16,16))
+    nx.draw_networkx(genePhenotypeNetwork, pos = pos, with_labels = True)
+    print("Save file as:")
+    saveFileName=str(input())
+    plt.savefig(saveFileName+".png")
+    plt.show()
 
-    #Read cancers and associated genes information from json file into MongoDB collection.
-    with open('cancergenes.json') as file:
-        fileData=json.load(file)
-
-    dbcollection.insert_many(fileData)
+# Read in diseases and associated gene(s) information from json file and 
+# store information in dictionary.
+def read_json_file(cancerGenesDict):
+    with open('cancergenes.json') as jsonFile:
+        jsonFileData=json.load(jsonFile)
     
-    #Create and fill dictionary with values of genes and associated cancers.
-    cancerGenesDict={}
-    with open('cancergenes.json') as file2:
-        fileData2=json.load(file2)
-        for object in fileData2:
-            for key,values in object.items():
-                cancerGenesDict[key]=values
-                for value in values:
-                    if value not in cancerGenesDict:
-                        cancerGenesDict[value]=[key]
-                    else:
-                        cancerGenesDict[value].append(key)
+    for object in jsonFileData:
+        for key,values in object.items():
+            cancerGenesDict[key]=values
+            for value in values:
+                if value not in cancerGenesDict:
+                    cancerGenesDict[value]=[key]
+                else:
+                    cancerGenesDict[value].append(key)
 
-    #Enter gene or phenotype of interest and how many degrees of connections
-    #from starting point to display in graph.
-    querySet=set()
-    genePhenotypeNetwork = nx.Graph()
+    jsonFile.close()
+
+#Enter gene or phenotype of interest and how many degrees of connections
+#from starting point to display in graph.
+def get_user_input(cancerGenesDict,querySet):
     while True:
-        print("Please enter your gene of phenotype of interest to begin.")
+        print("Please enter your gene or phenotype of interest to begin.")
         initialQuery=str(input())
-
         if initialQuery in cancerGenesDict:
             print(cancerGenesDict[initialQuery])
             querySet.add(initialQuery)
@@ -51,9 +50,11 @@ def main():
 
     print("Please enter the number of degrees to display.")
     degrees=int(input())
+    return degrees
 
-    #Add nodes  and edge to graph based on initial interest gene or phenotype 
-    #and degrees of separation. 
+#Add nodes and edge to graph based on initial interest gene or phenotype 
+#and degrees of separation. 
+def add_nodes_to_graph(degrees,querySet,cancerGenesDict,genePhenotypeNetwork):
     for _ in range(degrees):
         tempSet=set()
         for query in querySet:
@@ -62,10 +63,25 @@ def main():
                 tempSet.add(value) 
         querySet=tempSet
 
-    pos=nx.spring_layout(genePhenotypeNetwork,k=3)
-    plt.figure(3,figsize=(16,16))
-    nx.draw_networkx(genePhenotypeNetwork, pos = pos, with_labels = True)
-    plt.savefig("genePhenotypeNetwork.png")
+def main():
+    #Initialize MongoDB and a mongo collection.
+    mongoDBclient=None
+    db=mongo_init(mongoDBclient)
+    dbcollection=db['Gene-Phenotype-Graph-Collection']
+    
+    #Create and fill dictionary with values of genes and associated cancers.
+    cancerGenesDict={}
+    read_json_file(cancerGenesDict)
+
+    querySet=set()
+    genePhenotypeNetwork = nx.Graph()
+    degrees=get_user_input(cancerGenesDict,querySet)
+
+    add_nodes_to_graph(degrees,querySet,cancerGenesDict,genePhenotypeNetwork)
+    
+    draw_graph(genePhenotypeNetwork)
+    
+    #Remove after testing.
     dbcollection.drop()
 
 if __name__=="__main__":
