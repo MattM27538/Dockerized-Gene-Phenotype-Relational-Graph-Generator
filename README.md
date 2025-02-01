@@ -11,4 +11,4 @@ Example input:
 ![image](https://github.com/user-attachments/assets/c40b11ee-9e17-4912-93cd-7545ce2efb4b)
 
 Example output:
-![image](https://github.com/user-attachments/assets/b1a9321b-70b8-4b28-9838-a3a126392056)
+![image](https://github.com/user-attachments/assets/51b500ad-0591-436b-8e7a-614135d5f505)
