@@ -1,11 +1,23 @@
 [
     {
-        "Classification"  : "Breast cancer (women)",
-        "Associated Gene" : "ATM"
+        "Breast cancer (women)": ["ATM", "BARD1","BRCA1","BRCA2",
+        "CHEK2","CDH1","NF1","PALB2","PTEN", "RAD51C", "RAD51D",
+        "STK11","TP53"]
     },
     {
-        "Classification"  : "Breast cancer (women)",
-        "Associated Gene" : "BARD1"
+        "Breast cancer (men)": ["BRCA1","BRCA2","CHEK2","PALB2"]
+    },
+    {
+        "Pancreatic cancer": ["ATM","BRCA1","BRCA2","CDKN2A","EPCAM","MLH1",
+        "MSH2","MSH6","PALB2","STK11","TP53"]
+    },
+    {
+        "Colorectal cancer": ["APC","BMPR1A","EPCAM","MLH1","MSH2","MSH6",
+        "PMS2","CHEK2","POLE","PTEN","SMAD4","STK11","TP53","MUTYH"]
+    },
+    {
+        "Endometrial cancer": ["BRCA1","EPCAM","MLH1","MSH2","MSH6","PMS2",
+        "PTEN","STK11"]
     }
 
 ]
